@@ -1,0 +1,185 @@
+# FlowDesk AI – Ava v1.1: Developer Reference Guide
+
+**Repository:** gvjj-voice-agent
+**Project Status:** Pre-Alpha / Prototyping
+**Organization:** Good Vibez Jiu-Jitsu & Fitness (GVJJ)
+**Type:** Emotionally calibrated voice assistant for scheduling and lead engagement
+
+## Table of Contents
+
+1.  [Overview of Ava](#overview-of-ava)
+2.  [System Architecture](#system-architecture)
+3.  [Deployment](#deployment)
+4.  [User Interface (UI)](#user-interface-ui)
+5.  [Knowledge Base](#knowledge-base)
+    *   [Structure](#knowledge-base-structure)
+    *   [Knowledge Base Processing](#knowledge-base-processing)
+6.  [Conversation Flow and Behavior Engine](#conversation-flow-and-behavior-engine)
+7.  [Testing and Sandbox Simulation](#testing-and-sandbox-simulation)
+8.  [Troubleshooting](#troubleshooting)
+9.  [Developer Onboarding](#developer-onboarding)
+10. [Contributing](#contributing)
+11. [Additional Notes](#additional-notes)
+12. [License](#license)
+13. [Contact](#contact)
+
+## Overview of Ava
+
+### Core Functionality
+
+Ava is an emotionally-calibrated conversational assistant designed for real-time lead capture and intro class bookings. It dynamically adapts to user tone, emotion, and intent using a modular logic engine to create a human-like and consent-gated interaction experience.
+
+### Key Features
+
+*   Adaptive Tone-Mirroring Engine: Ensures responses match user sentiment.
+*   Behavior-Based Conversation Stack: Manages dynamic flows and response customization.
+*   Drift Recovery & Objection Handling: Gently redirects conversations if off-topic or hesitations occur.
+*   Consent-Gated Progression: Checks user approval before advancing in the conversation.
+*   Integration: Works with TTS/STT, CRM, and scheduling systems.
+*   Pluggable Vector Search: Utilizes LangChain and Pinecone to support contextual understanding.
+*   Modular Knowledge Chunking: Processes and organizes content for reference.
+
+## System Architecture
+
+### Components
+
+*   Voice Synthesis: ElevenLabs (TTS)
+*   Speech-to-Text (STT): Whisper or Deepgram
+*   AI Logic Engine: OpenAI (GPT-4 based) alongside LangChain
+*   Telephony/Messaging: Twilio
+*   Automation/Webhooks: Make.com or n8n (planned)
+*   Scheduling/CRM: Google Calendar & Google Sheets integration (planned)
+*   Vector Database: Pinecone
+*   Orchestration (Planned): LangChain agent routing
+
+### Data Flow
+
+User question → STT (Whisper/Deepgram) → LangChain for context via Pinecone → GPT response → TTS (ElevenLabs) → CRM/Booking webhook
+
+### Module Breakdown
+
+*   Tone Tracker: Determines user sentiment to align Ava’s responses.
+*   Drift Recovery: Detects and corrects off-topic conversation flows.
+*   Booking Logic: Manages slot lookup and finalizes booking processes.
+*   Consent Stack: Confirms user agreement at each critical step.
+*   Soft Reset Engine: Reframes interactions when confusion is detected.
+
+## Deployment
+
+### Environment Setup
+
+*   Prerequisite: Python 3.9+
+*   Dependencies Installation:
+
+    ```bash
+    pip install pymupdf requests nltk openai langchain pinecone-client tqdm python-dotenv
+    ```
+
+### Configuration
+
+Utilize a `.env` file to store API keys and credentials securely. Example configuration:
+
+### API Integration
+
+*   STT: Whisper/Deepgram integration.
+*   TTS: ElevenLabs for voice synthesis.
+*   Contextual Search: Pinecone integration via LangChain.
+*   Telephony: Twilio for call and message triggers.
+*   Automation: Planned integration with Make.com for webhook-based actions.
+
+### Security and Authentication
+
+*   Always use environment variables via dotenv to manage secrets.
+*   Ensure that production tokens are kept secured and only accessible from the administrator’s machine.
+
+## User Interface (UI)
+
+### Admin Mode
+
+Activation via the passphrase “Let the good vibes roll” enables full admin context and access to advanced configuration settings.
+
+### Demo Environment
+
+*   Simulated call setups for testing purposes.
+*   Uses designated test numbers and sandbox data.
+*   Pre-loaded FAQ and chunked data enable quick demonstrations.
+
+## Knowledge Base
+
+### Structure
+
+*   Maintained as a central PDF and supplemented by structured internal documents.
+*   Organized with section markers and tag maps for easy reference.
+
+### Knowledge Base Processing
+
+This section details how the knowledge base is processed, chunked, embedded, and stored for use with Ava. The following Python script is used to perform these tasks:
+
+#### 1. Load Your Document(s)
+
+This section loads the PDF document using `PyMuPDFLoader`. Make sure to replace `"path/to/your/kb.pdf"` with the actual path to your PDF file.
+
+```python
+import os
+from langchain_document_loaders import PyMuPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_pinecone import Pinecone
+from langchain_chains import RetrievalQA
+from langchain_llms import OpenAI
+
+# 1. Load Your Document(s)
+# Replace with the path to your KB PDF
+pdf_path = "path/to/your/kb.pdf"  # <--- REPLACE WITH YOUR ACTUAL PDF PATH
+loader = PyMuPDFLoader(pdf_path)
+documents = loader.load()
+print(f"Loaded {len(documents)} documents.")
+# 2. Split into Chunks
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,  # Adjust as needed
+    chunk_overlap=50,  # Adjust as needed
+    length_function=len,
+    add_start_index=True,
+)
+chunks = text_splitter.split_documents(documents)
+print(f"Split into {len(chunks)} chunks.")
+# 3. (Optional) Enhance Chunks with Metadata
+for i, chunk in enumerate(chunks):
+    chunk.metadata["chunk_id"] = i
+    # Add more metadata as needed (e.g., source document, section heading)
+
+# 4. Embed Chunks
+os.environ["OPENAI_API_KEY"] = "YOUR_OPENAI_API_KEY"  # Or load from .env
+embeddings = OpenAIEmbeddings()
+
+# Embed a single chunk for demonstration
+sample_embedding = embeddings.embed_query(chunks[0].page_content)
+print(f"Embedding length: {len(sample_embedding)}")
+
+# 5. Store Embeddings
+os.environ["PINECONE_API_KEY"] = "YOUR_PINECONE_API_KEY"
+os.environ["PINECONE_ENVIRONMENT"] = "YOUR_PINECONE_ENVIRONMENT"
+
+index_name = "your-index-name"  # Choose a name for your Pinecone index
+
+# Create Pinecone vectorstore
+vectorstore = Pinecone.from_documents(
+    chunks, embeddings, index_name=index_name
+)
+# 6. Define Conversational Flows (Example)
+llm = OpenAI(temperature=0)  # Or use a different LLM
+
+qa_chain = RetrievalQA.from_chain_type(
+    llm=llm,
+    chain_type="stuff",  # Or try "map_reduce", "refine"
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 3}),  # Adjust k
+    return_source_documents=True,
+)
+
+query = "What is AVA?"
+result = qa_chain({"query": query})
+
+print(result["result"])
+print(result["source_documents"])
+
+
