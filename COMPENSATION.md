@@ -1,4 +1,4 @@
-FlowDesk AI: v2.0 PRO – Contributor Compensation Policy
+FlowDesk AI: v1.1 – Contributor Compensation Policy
 Table of Contents
 Introduction
 Eligibility and Scope
