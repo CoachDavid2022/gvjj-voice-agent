@@ -34,10 +34,11 @@ This reads `🤙AVA CORE KB MODS.docx` and writes `ava_modlist_chunks.jsonl` in 
 Use the generated file with `module_manager.py` to retrieve a module for a sample phrase:
 
 ```bash
-python "gvjj-voice-agent_ready for embeding/module_manager.py" \
-    -m "gvjj-voice-agent_ready for embeding/ava_modlist_chunks.jsonl" \
-    -i "Hello"
+python "gvjj-voice-agent_ready for embeding/module_manager.py" -i "Hello"
 ```
+
+The `--modules` argument defaults to
+`gvjj-voice-agent_ready for embeding/ava_modlist_chunks.jsonl`.
 
 You should see a selected module printed to the console.
 

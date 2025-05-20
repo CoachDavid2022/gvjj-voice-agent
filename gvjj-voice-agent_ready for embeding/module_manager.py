@@ -133,8 +133,12 @@ def print_module(m):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument('-m','--modules', default='modules.json',
-                   help='path to module JSON')
+    p.add_argument(
+        '-m',
+        '--modules',
+        default='gvjj-voice-agent_ready for embeding/ava_modlist_chunks.jsonl',
+        help='path to module JSONL'
+    )
     p.add_argument('-i','--input', help='user input text')
     p.add_argument('-o','--orchestrate', action='store_true',
                    help='full orchestration stack')
