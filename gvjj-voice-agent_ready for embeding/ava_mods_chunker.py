@@ -1,19 +1,31 @@
 import re
 import json
 import argparse
-from sentence_transformers import SentenceTransformer
+try:
+    from sentence_transformers import SentenceTransformer
+except ImportError:  # allow running without embeddings
+    SentenceTransformer = None
 import os
 from pathlib import Path
-from dotenv import load_dotenv
-import pinecone
+try:
+    from dotenv import load_dotenv
+except ImportError:  # fallback if dotenv missing
+    def load_dotenv(*args, **kwargs):
+        pass
+try:
+    import pinecone
+except ImportError:
+    pinecone = None
 
 try:
     from docx import Document
 except ImportError:
-    raise ImportError("python-docx is required: pip install python-docx")
+    Document = None
 
 def load_source(path):
     if path.lower().endswith('.docx'):
+        if Document is None:
+            raise RuntimeError("python-docx is required to read .docx files")
         doc = Document(path)
         # join all non-empty paragraphs
         return '\n'.join(p.text for p in doc.paragraphs if p.text.strip())
@@ -44,10 +56,13 @@ def parse_modules(text):
         for line in lines:
             s = line.strip()
             if s.startswith("title:"):
-                _, val = s.split(":",1)
+                _, val = s.split(":", 1)
                 title = val.strip()
-                m["title"]     = title
-                m["module_id"] = title.split(":")[0]
+                m["title"] = title
+                base_id = title.split(":")[0].strip()
+                base_id = base_id.replace(" ", "-")
+                base_id = re.sub(r"[\s\W]+", "", base_id)
+                m["module_id"] = base_id
                 current = None
             elif s.startswith("intent:"):
                 m["intent"] = s.split(":",1)[1].strip()
@@ -56,8 +71,15 @@ def parse_modules(text):
                 m["phase"] = s.split(":",1)[1].strip()
                 current = None
             elif s.startswith("tags:"):
-                tags = s.split(":",1)[1].split(",")
-                m["tags"] = [t.strip() for t in tags if t.strip()]
+                tag_str = s.split(":", 1)[1]
+                raw_tags = [t.strip() for t in tag_str.split(",") if t.strip()]
+                parsed = []
+                for t in raw_tags:
+                    if "=" in t:
+                        parsed.append(t)
+                    else:
+                        parsed.append(f"tone_style={t}")
+                m["tags"] = parsed
                 current = None
             elif s.startswith("trigger_phrases:"):
                 current = "trigger"
@@ -76,6 +98,11 @@ def parse_modules(text):
     return modules
 
 def embed_modules(modules, model_name):
+    if SentenceTransformer is None or model_name.lower() == "none":
+        for m in modules:
+            m["embedding"] = []
+        return modules
+
     model = SentenceTransformer(model_name)
     texts = [m["raw_text_chunk"] for m in modules]
     embs = model.encode(texts, show_progress_bar=True)
@@ -119,7 +146,7 @@ def main():
     print(f"Written {len(modules)} chunks to {args.output}")
 
     # ——— NEW: optional Pinecone upload ———
-    if args.pinecone_index:
+    if args.pinecone_index and pinecone is not None:
         # Load environment variables from the project root
         root_dir = Path(__file__).resolve().parent.parent
         load_dotenv(root_dir / ".env")
