@@ -23,7 +23,7 @@ AVA (Automated Voice Assistant) is a voice-first AI designed to welcome new lead
 4. **Text-to-Speech** produces natural speech via ElevenLabs.
 5. **Telephony** (Twilio) delivers calls and SMS.
 
-The knowledge base originates from `🤙AVA CORE KB MODS.docx` and is processed into JSON lines by `ava_mods_chunker.py`. The orchestration logic in `module_manager.py` selects modules according to tags and conversation phase.
+The knowledge base originates from `🤙AVA CORE KB MODS.docx` and is processed into JSON lines by the `ava_mods_chunker` module. The orchestration logic in `module_manager` selects modules according to tags and conversation phase.
 
 ## Getting Started
 1. **Clone the repository**
@@ -51,11 +51,11 @@ The knowledge base originates from `🤙AVA CORE KB MODS.docx` and is processed 
    ```
 5. **Generate knowledge base embeddings**
    ```bash
-   python "gvjj-voice-agent_ready for embeding/ava_mods_chunker.py"
+   python -m ava.ava_mods_chunker
    ```
 6. **Test module retrieval**
     ```bash
-    python "gvjj-voice-agent_ready for embeding/module_manager.py" -i "Hello"
+    python -m ava.module_manager -i "Hello"
     ```
     The `--modules` argument defaults to
     `gvjj-voice-agent_ready for embeding/ava_modlist_chunks.jsonl`.

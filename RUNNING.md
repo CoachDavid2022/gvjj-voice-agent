@@ -25,16 +25,16 @@ TWILIO_AUTH_TOKEN=your_twilio_token
 Run the chunker to convert the module document into JSONL with embeddings:
 
 ```bash
-python "gvjj-voice-agent_ready for embeding/ava_mods_chunker.py"
+python -m ava.ava_mods_chunker
 ```
 
 This reads `🤙AVA CORE KB MODS.docx` and writes `ava_modlist_chunks.jsonl` in the same folder.
 
 ## 4. Test module retrieval
-Use the generated file with `module_manager.py` to retrieve a module for a sample phrase:
+Use the generated file with `module_manager` to retrieve a module for a sample phrase:
 
 ```bash
-python "gvjj-voice-agent_ready for embeding/module_manager.py" -i "Hello"
+python -m ava.module_manager -i "Hello"
 ```
 
 The `--modules` argument defaults to

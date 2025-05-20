@@ -1,8 +1,11 @@
 import json
 import unittest
 from pathlib import Path
+import sys
 
-from validate_modules import VALID_PHASES
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
+
+from ava.validate_modules import VALID_PHASES
 
 class TestModuleValidation(unittest.TestCase):
     @classmethod
