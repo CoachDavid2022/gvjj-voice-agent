@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+venv/
+.env*/
+*.env
+# others
+*.pyd
+.Python
+build/
+Develop-Eggs/
+dist/
+.eggs/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+# Mac-specific files
+.DS_Store
