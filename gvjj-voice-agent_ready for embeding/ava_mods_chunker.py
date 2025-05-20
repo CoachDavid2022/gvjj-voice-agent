@@ -3,6 +3,7 @@ import json
 import argparse
 from sentence_transformers import SentenceTransformer
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 import pinecone
 
@@ -119,8 +120,9 @@ def main():
 
     # ——— NEW: optional Pinecone upload ———
     if args.pinecone_index:
-        # adjust path if needed:
-        load_dotenv(dotenv_path=r"c:\Users\drat8\OneDrive\Documents\gvjj-voice-agent_ready for embedding\.env.txt")
+        # Load environment variables from the project root
+        root_dir = Path(__file__).resolve().parent.parent
+        load_dotenv(root_dir / ".env")
         api_key = os.getenv("PINECONE_API_KEY")
         env     = os.getenv("PINECONE_ENV")
         if not api_key or not env:

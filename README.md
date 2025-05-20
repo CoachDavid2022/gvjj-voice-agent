@@ -430,14 +430,16 @@ runtime. Typically, you'd add this to the beginning of your main script (e.g., m
 import os 
 from dotenv import load_dotenv 
 # Load environment variables from .env file 
-load_dotenv() 
-# Access API keys like this: 
-openai_api_key = os.getenv("OPENAI_API_KEY") 
-pinecone_api_key = os.getenv("PINECONE_API_KEY") 
-# ... and so on for other keys 
-3.  
-Crucial Security Note: 
-● The .env file must be added to your project's .gitignore file to prevent it from being 
+load_dotenv()
+# Access API keys like this:
+openai_api_key = os.getenv("OPENAI_API_KEY")
+pinecone_api_key = os.getenv("PINECONE_API_KEY")
+# ... and so on for other keys
+● The `ava_mods_chunker.py` script assumes the `.env` file is located in the
+  project root and loads it automatically using `load_dotenv()`.
+3.
+Crucial Security Note:
+● The .env file must be added to your project's .gitignore file to prevent it from being
 accidentally committed to the Git repository. 
 ● API keys grant access to paid services and sensitive data. Treat them like passwords. 
 ● Production tokens and keys should be managed with extreme care, ideally using secure 
