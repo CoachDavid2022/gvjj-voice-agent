@@ -1135,39 +1135,12 @@ identification for tax purposes).
 ● Legal: This policy is non-binding. Contributions must be original. Compensation does 
 not imply ownership. 
 For full details, refer to the COMPENSATION.md file. 
-9. License Information 
-The provided information indicates two potential licensing statements for this project. It is 
-critical for the project owner (CoachDavid2022) to clarify which license accurately reflects the 
-intended use and distribution terms for the gvjj-voice-agent repository. 
-1. Primary Statement (from initial user text & README.md snippet): 
-○ Type: Private Use Only 
-○ Copyright: (c) Good Vibez Jiu-Jitsu & Fitness, 2025 
-○ Terms: This repository is for internal development and testing. 
-2. Secondary Statement (from "LICENSE" text provided by user): 
-○ Type: MIT License 
-○ Copyright: Copyright (c) 2025 CoachDavid2022 
-○ Permissions: 
-■ Commercial use 
-■ Modification 
-■ Distribution 
-■ Private use 
-○ Conditions: The copyright notice and this permission notice shall be included in 
-all copies or substantial portions of the Software. The software is provided "AS 
-IS", without warranty. 
-Recommendation for Clarity: 
-● If the project is strictly for internal development and private use by Good Vibez 
-Jiu-Jitsu & Fitness, then the "Private Use Only" statement is appropriate, and the MIT 
-License text should be removed or clearly marked as not applicable to the entire 
-repository. 
-● If the project, or parts of it, are intended to be open source, then the MIT License is a 
-common and permissive choice. In this case, the "Private Use Only" clause would need 
-to be removed or amended. 
-● It's possible to have a mixed licensing model (e.g., core components under MIT, specific 
-proprietary assets or configurations kept private), but this must be very clearly 
-delineated. 
-Action Required by Project Owner: Please choose one clear license that applies to the 
-repository as a whole, or clearly document how different licenses apply to different parts of the 
-project. This should be reflected in a single LICENSE file in the root of the repository. 
+9. License Information
+This repository is released under the **MIT License**. The MIT License allows
+use, modification, distribution, and private or commercial use provided that the
+copyright notice and permission notice appear in all copies. The previous
+"private use only" language has been removed to avoid confusion. See the
+[LICENSE](LICENSE) file for the complete text of the license.
 10. Troubleshooting & Support 
 As a pre-alpha project, you may encounter issues or have questions. 
 ● Common Issues & Debugging: 
