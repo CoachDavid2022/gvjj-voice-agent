@@ -12,11 +12,12 @@ logging.basicConfig(
 
 class Module:
     def __init__(self, mod_data):
+        self.module_id = mod_data.get('module_id', '')
         self.title = mod_data.get('title', '')
         self.intent = mod_data.get('intent', '')
         self.phase = mod_data.get('phase', '')
-        self.tags = dict(item.split('=') 
-                         for item in mod_data.get('tags','').split(', ') 
+        self.tags = dict(item.split('=')
+                         for item in mod_data.get('tags','').split(', ')
                          if '=' in item)
         self.trigger_phrases = mod_data.get('trigger_phrases', [])
         self.response = mod_data.get('response', '')
@@ -25,18 +26,18 @@ class Module:
 
 class ModuleManager:
     ORCHESTRATION_SEQ = [
-        "AVA-MOD-0001","AVA-MOD-0018","AVA-MOD-0019",
-        "AVA-MOD-0002","AVA-MOD-0003","AVA-MOD-0004",
-        "AVA-MOD-0005","AVA-MOD-0006","AVA-MOD-0007",
-        "AVA-MOD-0008","AVA-MOD-0009","AVA-MOD-0020",
-        "AVA-MOD-0021","AVA-MOD-0022","AVA-MOD-0027",
-        "AVA-MOD-0014","AVA-MOD-0015","AVA-MOD-0012",
-        "AVA-MOD-0011","AVA-MOD-0013","AVA-MOD-0016",
-        "AVA-MOD-0017","AVA-MOD-0025","AVA-MOD-0028",
-        "AVA-MOD-0029","AVA-MOD-0024","AVA-MOD-0026",
-        "AVA-MOD-0032","AVA-MOD-0033","AVA-MOD-0034",
-        "AVA-MOD-0010","AVA-MOD-0023","AVA-MOD-0030",
-        "AVA-MOD-0035"
+        "AVAMOD0001","AVAMOD0018","AVAMOD0019",
+        "AVAMOD0002","AVAMOD0003","AVAMOD0004",
+        "AVAMOD0005","AVAMOD0006","AVAMOD0007",
+        "AVAMOD0008","AVAMOD0009","AVAMOD0020",
+        "AVAMOD0021","AVAMOD0022","AVAMOD0027",
+        "AVAMOD0014","AVAMOD0015","AVAMOD0012",
+        "AVAMOD0011","AVAMOD0013","AVAMOD0016",
+        "AVAMOD0017","AVAMOD0025","AVAMOD0028",
+        "AVAMOD0029","AVAMOD0024","AVAMOD0026",
+        "AVAMOD0032","AVAMOD0033","AVAMOD0034",
+        "AVAMOD0010","AVAMOD0023","AVAMOD0030",
+        "AVAMOD0035NarrativeIntegrityLockPhantomWallPatch"
     ]
 
     def __init__(self, mod_list):
@@ -62,7 +63,7 @@ class ModuleManager:
         return any(isinstance(kw, str) and kw.lower() in ui for kw in m.trigger_phrases)
 
     def update_state(self, m):
-        if m.title == "AVA-MOD-0019":
+        if m.module_id == "AVAMOD0019":
             self.conversation_state['consent_checked'] = True
         if m.intent == "booking":
             self.conversation_state['current_intent'] = "booking"
@@ -71,15 +72,19 @@ class ModuleManager:
 
     def dynamic_retrieval(self, user_input):
         # override critical modules
-        for t in ("AVA-MOD-0035","AVA-MOD-0019","AVA-MOD-0032","AVA-MOD-0025"):
-            m = next((x for x in self.modules if x.title==t), None)
+        for t in (
+            "AVAMOD0035NarrativeIntegrityLockPhantomWallPatch",
+            "AVAMOD0019",
+            "AVAMOD0032",
+            "AVAMOD0025"):
+            m = next((x for x in self.modules if x.module_id==t), None)
             if m and self._check_activation(m, user_input):
                 self.update_state(m)
                 return [m]
         # eligible set
         elig = [m for m in self.modules if self._check_activation(m, user_input)]
         if not elig:
-            fb = next(x for x in self.modules if x.title=="AVA-MOD-0010")
+            fb = next(x for x in self.modules if x.module_id=="AVAMOD0010")
             self.update_state(fb)
             return [fb]
         # score & pick top
@@ -92,20 +97,20 @@ class ModuleManager:
     def handle_silence(self, duration):
         self.conversation_state['silence_duration'] = duration
         if duration > 4.5:
-            fb = next(x for x in self.modules if x.title=="AVA-MOD-0010")
+            fb = next(x for x in self.modules if x.module_id=="AVAMOD0010")
             self.update_state(fb)
             return [fb]
         return []
 
     def orchestrate(self, user_input):
         hits = []
-        for title in self.ORCHESTRATION_SEQ:
-            m = next((x for x in self.modules if x.title==title), None)
+        for mid in self.ORCHESTRATION_SEQ:
+            m = next((x for x in self.modules if x.module_id==mid), None)
             if m and self._check_activation(m, user_input):
                 self.update_state(m)
                 hits.append(m)
         if not hits:
-            fb = next(x for x in self.modules if x.title=="AVA-MOD-0010")
+            fb = next(x for x in self.modules if x.module_id=="AVAMOD0010")
             self.update_state(fb)
             hits.append(fb)
         return hits
