@@ -54,11 +54,11 @@ The knowledge base originates from `🤙AVA CORE KB MODS.docx` and is processed 
    python "gvjj-voice-agent_ready for embeding/ava_mods_chunker.py"
    ```
 6. **Test module retrieval**
-   ```bash
-   python "gvjj-voice-agent_ready for embeding/module_manager.py" \
-       -m "gvjj-voice-agent_ready for embeding/ava_modlist_chunks.jsonl" \
-       -i "Hello"
-   ```
+    ```bash
+    python "gvjj-voice-agent_ready for embeding/module_manager.py" -i "Hello"
+    ```
+    The `--modules` argument defaults to
+    `gvjj-voice-agent_ready for embeding/ava_modlist_chunks.jsonl`.
 
 ## Running Tests
 Run the unit tests to validate module data:
