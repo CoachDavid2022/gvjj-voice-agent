@@ -2,6 +2,8 @@ import json
 import unittest
 from pathlib import Path
 
+from validate_modules import VALID_PHASES
+
 class TestModuleValidation(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -23,6 +25,15 @@ class TestModuleValidation(unittest.TestCase):
     def test_module_ids_unique(self):
         ids = [m["module_id"] for m in self.modules]
         self.assertEqual(len(ids), len(set(ids)), "module_id values are not unique")
+
+    def test_phase_values_valid(self):
+        for mod in self.modules:
+            phase = mod.get("phase")
+            self.assertIn(
+                phase,
+                VALID_PHASES,
+                f"{mod.get('module_id')} invalid phase '{phase}'",
+            )
 
     def test_trigger_phrases_non_empty(self):
         for mod in self.modules:
