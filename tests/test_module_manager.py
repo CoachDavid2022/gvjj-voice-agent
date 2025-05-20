@@ -2,7 +2,12 @@ import unittest
 import importlib.util
 from pathlib import Path
 
-MODULE_PATH = Path(__file__).resolve().parent.parent / "gvjj-voice-agent_ready for embeding" / "module_manager.py"
+MODULE_PATH = (
+    Path(__file__).resolve().parents[1]
+    / "src"
+    / "ava"
+    / "module_manager.py"
+)
 spec = importlib.util.spec_from_file_location("module_manager", MODULE_PATH)
 module_manager = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module_manager)
