@@ -1,0 +1,9 @@
+pymupdf
+python-docx
+sentence-transformers
+pinecone-client
+langchain
+python-dotenv
+nltk
+requests
+tqdm
