@@ -35,9 +35,13 @@ def parse_modules(text):
             "title": None,
             "intent": None,
             "phase": None,
+            "category": None,
             "tags": [],
             "trigger_phrases": [],
             "response_snippet": "",
+            "fallback": "",
+            "notes": "",
+            "SIM_VARIANT_ALLOWED": None,
             "raw_text_chunk": block.strip()
         }
         current = None
@@ -55,6 +59,9 @@ def parse_modules(text):
             elif s.startswith("phase:"):
                 m["phase"] = s.split(":",1)[1].strip()
                 current = None
+            elif s.startswith("category:"):
+                m["category"] = s.split(":",1)[1].strip()
+                current = None
             elif s.startswith("tags:"):
                 tags = s.split(":",1)[1].split(",")
                 m["tags"] = [t.strip() for t in tags if t.strip()]
@@ -63,7 +70,12 @@ def parse_modules(text):
                 current = "trigger"
             elif s.startswith("response:"):
                 current = "response"
-            elif s.startswith("fallback:") or s.startswith("notes:"):
+            elif s.startswith("fallback:"):
+                current = "fallback"
+            elif s.startswith("notes:"):
+                current = "notes"
+            elif s.startswith("SIM_VARIANT_ALLOWED:"):
+                m["SIM_VARIANT_ALLOWED"] = s.split(":",1)[1].strip()
                 current = None
             else:
                 if current == "trigger" and s.startswith("•"):
@@ -71,7 +83,13 @@ def parse_modules(text):
                     m["trigger_phrases"].append(phrase)
                 elif current == "response" and s:
                     m["response_snippet"] += s + " "
+                elif current == "fallback" and s:
+                    m["fallback"] += s + " "
+                elif current == "notes" and s:
+                    m["notes"] += s + " "
         m["response_snippet"] = m["response_snippet"].strip()
+        m["fallback"] = m["fallback"].strip()
+        m["notes"] = m["notes"].strip()
         modules.append(m)
     return modules
 
