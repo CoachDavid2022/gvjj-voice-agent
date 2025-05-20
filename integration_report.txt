@@ -1,0 +1,14 @@
+Added Twilio integration wrapper and CRM stub.
+
+Files added:
+- `src/ava/twilio_bridge.py`
+- `src/ava/twilio_mock.py`
+- `src/ava/crm_bridge.py`
+- `integration_notes.md`
+
+Existing file updated:
+- `src/ava/module_manager.py` now optionally sends SMS notifications via `twilio_bridge`.
+
+Outstanding TODOs:
+- Implement real CRM logic in `crm_bridge.update_contact_status`.
+- Provide valid Twilio credentials and TwiML URL in environment variables for production.

@@ -3,6 +3,17 @@ import time
 import json
 import logging
 import argparse
+import os
+import importlib.util
+from pathlib import Path
+
+try:
+    from . import twilio_bridge  # type: ignore
+except Exception:  # pragma: no cover - module may be loaded outside package
+    _p = Path(__file__).resolve().parent / "twilio_bridge.py"
+    spec = importlib.util.spec_from_file_location("twilio_bridge", _p)
+    twilio_bridge = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(twilio_bridge)
 
 logging.basicConfig(
     filename='module_performance.log',
@@ -124,6 +135,13 @@ class ModuleManager:
             'phase': self.conversation_state['phase']
         }
         logging.info(json.dumps(entry))
+        if os.getenv("ENABLE_TWILIO_NOTIFICATIONS") == "true":
+            # Send a brief SMS summary when enabled
+            summary = f"AVA phase: {self.conversation_state['phase']} | {activated_modules[0].title}"
+            try:
+                twilio_bridge.send_sms(os.getenv("NOTIFY_NUMBER", ""), summary)
+            except Exception as exc:  # pragma: no cover - notification failures shouldn't break
+                logging.error("Twilio notification failed: %s", exc)
 
 def print_module(m):
     print(f"\n--- {m.title} ---")
