@@ -50,6 +50,8 @@ def parse_modules(text):
             "tags": [],
             "trigger_phrases": [],
             "response_snippet": "",
+            "fallback": "",
+            "notes": "",
             "raw_text_chunk": block.strip()
         }
         current = None
@@ -85,7 +87,17 @@ def parse_modules(text):
                 current = "trigger"
             elif s.startswith("response:"):
                 current = "response"
-            elif s.startswith("fallback:") or s.startswith("notes:"):
+            elif s.startswith("fallback:"):
+                current = "fallback"
+                inline = s[len("fallback:"):].strip()
+                if inline:
+                    m["fallback"] += inline + " "
+            elif s.startswith("notes:"):
+                current = "notes"
+                inline = s[len("notes:"):].strip()
+                if inline:
+                    m["notes"] += inline + " "
+            elif s.startswith("SIM_VARIANT_ALLOWED") or s.startswith("END_MODULE"):
                 current = None
             else:
                 if current == "trigger" and s.startswith("•"):
@@ -93,7 +105,13 @@ def parse_modules(text):
                     m["trigger_phrases"].append(phrase)
                 elif current == "response" and s:
                     m["response_snippet"] += s + " "
+                elif current == "fallback" and s and not s.startswith(("SIM_VARIANT_ALLOWED", "END_MODULE")):
+                    m["fallback"] += s + " "
+                elif current == "notes" and s and not s.startswith(("SIM_VARIANT_ALLOWED", "END_MODULE")):
+                    m["notes"] += s + " "
         m["response_snippet"] = m["response_snippet"].strip()
+        m["fallback"] = m["fallback"].strip()
+        m["notes"] = m["notes"].strip()
         modules.append(m)
     return modules
 
