@@ -27,9 +27,13 @@ class Module:
         self.title = mod_data.get('title', '')
         self.intent = mod_data.get('intent', '')
         self.phase = mod_data.get('phase', '')
-        self.tags = dict(item.split('=')
-                         for item in mod_data.get('tags','').split(', ')
-                         if '=' in item)
+        raw_tags = mod_data.get('tags', '')
+        if isinstance(raw_tags, list):
+            self.tags = {k: v for k, v in (t.split('=', 1) for t in raw_tags if '=' in t)}
+        else:
+            self.tags = dict(item.split('=')
+                             for item in raw_tags.split(', ')
+                             if '=' in item)
         self.trigger_phrases = mod_data.get('trigger_phrases', [])
         self.response = mod_data.get('response', '')
         self.fallback = mod_data.get('fallback', '')
@@ -165,7 +169,11 @@ def main():
     args = p.parse_args()
 
     with open(args.modules, 'r', encoding='utf-8') as f:
-        mod_list = json.load(f)
+        try:
+            mod_list = json.load(f)
+        except json.JSONDecodeError:
+            f.seek(0)
+            mod_list = [json.loads(line) for line in f if line.strip()]
     manager = ModuleManager(mod_list)
 
     if args.input:
