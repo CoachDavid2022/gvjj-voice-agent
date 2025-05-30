@@ -52,6 +52,10 @@ class ModuleManager:
         "AVAMOD0029","AVAMOD0024","AVAMOD0026",
         "AVAMOD0032","AVAMOD0033","AVAMOD0034",
         "AVAMOD0010","AVAMOD0023","AVAMOD0030",
+        # NOTE: The last entry deliberately breaks the numeric pattern.
+        # It acts as a sentinel module for narrative-integrity overrides
+        # and is referenced in tests. Preserve this exact ID when
+        # refactoring the orchestration logic.
         "AVAMOD0035NarrativeIntegrityLockPhantomWallPatch"
     ]
 
