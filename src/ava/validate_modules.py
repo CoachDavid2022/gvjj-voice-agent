@@ -2,7 +2,17 @@ import json
 import argparse
 from pathlib import Path
 
-VALID_PHASES = {"booking", "intake", "recovery", "greeting", "escalation", "confirmation"}
+VALID_PHASES = {
+    "booking",
+    "intake",
+    "recovery",
+    "greeting",
+    "escalation",
+    "confirmation",
+    "all",
+    "tonal",
+    "soft",
+}
 
 
 def load_modules(path: str):

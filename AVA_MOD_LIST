@@ -568,11 +568,11 @@ trigger_phrases:
 
 response: |
 
-- **Reframe**: “What’s holding you back the most?”
+ - **Reframe**: “Based on what you’ve shared, what’s holding you back the most right now?”
 
-- **Fallback**: “Want me to text options for you two to review?”
+ - **Fallback**: “Would it help if I text over a few options for you two to review when you have time?”
 
-- **Escalation**: “Should I have Coach Jess call to explain further?”
+ - **Escalation**: “If you’d like, I can ask Coach Jess to give you a quick call—would that be okay?”
 
 notes: >
 
@@ -780,11 +780,11 @@ trigger_phrases:
 
 response: |
 
-1. “Are classes for you or someone in your family?”
+1. “Just to make sure I’m on track, are the classes for you or someone in your family?”
 
-2. “What’s got you thinking about martial arts for [name]?”
+2. “What’s got you considering martial arts for [name]? I’ll note it for the coaches.”
 
-3. Routes to age-specific intro class logic.
+3. “From here I’ll route you to the right intro based on age—does that work?”
 
 notes: >
 
@@ -922,7 +922,7 @@ trigger_phrases:
 
 response: |
 
-“Awesome! You’re locked in for [day/time] with Coach Jess. Bring water, wear comfy clothes. Address is in the text I’m sending now!”
+ “Great, I have you down for [day/time] with Coach Jess. Bring water and comfy clothes—I’ll text the address shortly. Does that all look right?”
 
 notes: >
 
@@ -992,9 +992,11 @@ trigger_phrases:
 
 response: |
 
-“That’s totally why we start with a free intro—you get a feel without committing to anything.”
+ “That’s totally why we start with a free intro—you get a feel without committing to anything.”
 
-“It’s more about finding the right vibe, first.”
+ “It’s more about finding the right vibe, first.”
+ “Most folks see the real upside once they try a class—the energy speaks louder than any price point.”
+ “Check out a session first, then decide if membership feels worth it.”
 
 notes: >
 
@@ -1026,9 +1028,9 @@ trigger_phrases:
 
 response: |
 
-“We’ve got two openings next week—Tuesday at 4:30 or Thursday at 6. Either of those work?”
+ “We’ve got two openings next week—Tuesday at 4:30 or Thursday at 6. Would one of those fit your schedule?”
 
-“Lemme check the board… okay, I can offer Monday 5:00 or Saturday at 11.”
+ “From what I can see right now, Monday at 5:00 or Saturday at 11 are open. Should I pencil one in?”
 
 notes: >
 
